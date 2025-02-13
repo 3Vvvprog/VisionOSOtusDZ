@@ -14,7 +14,12 @@ struct VisionOSOtusDZApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            PrimaryWindow()
+                .environment(appModel)
+        }
+        
+        WindowGroup(id: "Second") {
+            SecondWindow()
                 .environment(appModel)
         }
 
@@ -29,5 +34,6 @@ struct VisionOSOtusDZApp: App {
                 }
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)
+        
      }
 }

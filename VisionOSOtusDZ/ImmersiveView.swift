@@ -11,16 +11,30 @@ import RealityKitContent
 
 struct ImmersiveView: View {
 
+    @State private var model = Entity()
+    @State private var isDropTargeted = false
+    
     var body: some View {
         RealityView { content in
-            // Add the initial RealityKit content
             if let immersiveContentEntity = try? await Entity(named: "Immersive", in: realityKitContentBundle) {
-                content.add(immersiveContentEntity)
+                model = immersiveContentEntity
+                model.components.set(InputTargetComponent(allowedInputTypes: .indirect))
+                model.generateCollisionShapes(recursive: true)
+                content.add(model)
 
                 // Put skybox here.  See example in World project available at
                 // https://developer.apple.com/
             }
         }
+        .gesture(
+            DragGesture()
+                .targetedToEntity(model)
+                .onChanged({ value in
+                    model.position = value.convert(value.location3D, from: .local, to: model.parent!)
+                })
+            
+        )
+        
     }
 }
 
